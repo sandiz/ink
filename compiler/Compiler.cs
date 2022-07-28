@@ -51,7 +51,7 @@ namespace Ink
                 _parsedStory.countAllVisits = _options.countAllVisits;
 
                 _runtimeStory = _parsedStory.ExportRuntime (_options.errorHandler);
-
+               
                 if( _pluginManager != null )
                     _runtimeStory = _pluginManager.PostExport (_parsedStory, _runtimeStory);
             } else {

@@ -218,7 +218,19 @@ namespace Ink.Parsed
 
             runtimeStory.ResetState ();
 
-			return runtimeStory;
+            var Stats = Ink.Stats.Generate(this);
+
+            runtimeStory.Stats.words = Stats.words;
+            runtimeStory.Stats.knots = Stats.knots;
+            runtimeStory.Stats.stitches = Stats.stitches;
+            runtimeStory.Stats.functions = Stats.functions;
+            runtimeStory.Stats.choices = Stats.choices;
+            runtimeStory.Stats.gathers = Stats.gathers;
+            runtimeStory.Stats.diverts = Stats.diverts;
+            runtimeStory.Stats.allknots = Stats.AllKnots;
+            runtimeStory.Stats.allstitches = Stats.AllStitches;
+
+            return runtimeStory;
 		}
 
         public ListDefinition ResolveList (string listName)
@@ -503,6 +515,7 @@ namespace Ink.Parsed
         HashSet<Runtime.Container> _dontFlattenContainers = new HashSet<Runtime.Container>();
 
         Dictionary<string, Parsed.ListDefinition> _listDefs;
+        Runtime.InkStats _inkStats;
 	}
 }
 

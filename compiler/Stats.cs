@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 namespace Ink {
     public struct Stats {
 
@@ -9,10 +10,11 @@ namespace Ink {
         public int choices;
         public int gathers;
         public int diverts;
-
+        public string[] AllKnots;
+        public string[] AllStitches;
+        
         public static Stats Generate(Ink.Parsed.Story story) {
             var stats = new Stats();
-
             var allText = story.FindAll<Ink.Parsed.Text>();
 
             // Count all the words across all strings
@@ -37,11 +39,24 @@ namespace Ink {
             stats.knots = knots.Count;
 
             stats.functions = 0;
-            foreach(var knot in knots)
+            List<string> tempNames = new List<string>();
+            foreach (var knot in knots)
+            {
+                tempNames.Add(knot.name);
                 if (knot.isFunction) stats.functions++;
+            }
+
+            stats.AllKnots = tempNames.ToArray();
+            tempNames.Clear();
 
             var stitches = story.FindAll<Ink.Parsed.Stitch>();
             stats.stitches = stitches.Count;
+            foreach(var stitch in stitches)
+            {
+                tempNames.Add(stitch.name);
+            }
+            stats.AllStitches = tempNames.ToArray();
+            tempNames.Clear();
 
             var choices = story.FindAll<Ink.Parsed.Choice>();
             stats.choices = choices.Count;

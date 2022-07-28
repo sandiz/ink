@@ -27,6 +27,9 @@ class InkTestBed
 
         // Errors to the extent that story couldn't be constructed?
         if (story == null) return;
+        Console.WriteLine("StoryJSON: " + story.ToJson());
+        var s2 = new Ink.Runtime.Story(story.ToJson());
+        Console.WriteLine("Stats: " + story.Stats.allknots.Length);
 
         while (story.canContinue || story.currentChoices.Count > 0) {
             if (story.canContinue)

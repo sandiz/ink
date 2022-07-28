@@ -131,6 +131,8 @@ namespace Ink
                         writer.WriteProperty("choices", stats.choices);
                         writer.WriteProperty("gathers", stats.gathers);
                         writer.WriteProperty("diverts", stats.diverts);
+                        writer.WriteProperty("allknots", string.Join(", ", stats.AllKnots));
+                        writer.WriteProperty("allstitches", string.Join(", ", stats.AllStitches));
                         writer.WriteObjectEnd();
 
                         writer.WritePropertyEnd();
@@ -145,6 +147,8 @@ namespace Ink
                         Console.WriteLine("Choices: "+stats.choices);
                         Console.WriteLine("Gathers: "+stats.gathers);
                         Console.WriteLine("Diverts: "+stats.diverts);
+                        Console.WriteLine("AllKnots: " + string.Join(", ", stats.AllKnots));
+                        Console.WriteLine("AllStitches: " + string.Join(", ", stats.AllStitches));
                     }
 
                     return;

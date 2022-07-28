@@ -7,16 +7,30 @@ using System.Diagnostics;
 
 namespace Ink.Runtime
 {
+    public struct InkStats
+    {
+        public int words;
+        public int knots;
+        public int stitches;
+        public int functions;
+        public int choices;
+        public int gathers;
+        public int diverts;
+        public string[] allknots;
+        public string[] allstitches;
+    }
     /// <summary>
     /// A Story is the core class that represents a complete Ink narrative, and
     /// manages the evaluation and state of it.
     /// </summary>
 	public class Story : Runtime.Object
 	{
+        public InkStats Stats;
+        
         /// <summary>
         /// The current version of the ink story file format.
         /// </summary>
-        public const int inkVersionCurrent = 20;
+        public const int inkVersionCurrent = 21;
 
         // Version numbers are for engine itself and story file, rather
         // than the story state save format
@@ -235,6 +249,19 @@ namespace Ink.Runtime
 
             _mainContentContainer = Json.JTokenToRuntimeObject (rootToken) as Container;
 
+            if (rootObject.ContainsKey("stats"))
+            {
+                Dictionary<string, object> stats = (Dictionary<string, object>)rootObject["stats"];
+                Stats.knots = (Int32)stats["knots"];
+                Stats.stitches = (Int32)stats["stitches"];
+                Stats.functions = (Int32)stats["functions"];
+                Stats.choices = (Int32)stats["choices"];
+                Stats.gathers = (Int32)stats["gathers"];
+                Stats.diverts = (Int32)stats["diverts"];
+                Stats.allknots = ((List<object>)stats["allknots"]).Select((s) => (string)s).ToArray();
+                Stats.allstitches = ((List<object>)stats["allstitches"]).Select((s) => (string)s).ToArray();
+            }
+
             ResetState ();
         }
 
@@ -292,6 +319,48 @@ namespace Ink.Runtime
                 writer.WriteObjectEnd();
                 writer.WritePropertyEnd();
             }
+
+
+            writer.WritePropertyStart("stats");
+
+            writer.WriteObjectStart();
+            writer.WriteProperty("words", Stats.words);
+            writer.WriteProperty("knots", Stats.knots);
+            writer.WriteProperty("stitches", Stats.stitches);
+            writer.WriteProperty("functions", Stats.functions);
+            writer.WriteProperty("choices", Stats.choices);
+            writer.WriteProperty("gathers", Stats.gathers);
+            writer.WriteProperty("diverts", Stats.diverts);
+
+            writer.WritePropertyStart("allknots");
+            writer.WriteArrayStart();
+
+            string[] empty = new string[0];
+            var ak = Stats.allknots != null ? Stats.allknots : empty;
+            foreach(var s in Stats.allknots)
+            {
+                writer.WriteStringStart();
+                writer.WriteStringInner(s);
+                writer.WriteStringEnd();
+            }
+            writer.WriteArrayEnd();
+            writer.WritePropertyEnd();
+
+            writer.WritePropertyStart("allstitches");
+            writer.WriteArrayStart();
+
+            ak = Stats.allstitches != null ? Stats.allstitches : empty;
+            foreach (var s in Stats.allstitches)
+            {
+                writer.WriteStringStart();
+                writer.WriteStringInner(s);
+                writer.WriteStringEnd();
+            }
+            writer.WriteArrayEnd();
+            writer.WritePropertyEnd();
+
+            writer.WriteObjectEnd();
+            writer.WritePropertyEnd();
 
             writer.WriteObjectEnd();
         }
@@ -2732,6 +2801,13 @@ namespace Ink.Runtime
                     return dm.startLineNumber;
                 }
                 return 0;
+            }
+        }
+
+        public List<string> NamedOnlyContent { 
+            get
+            {
+                return _mainContentContainer.namedOnlyContent.Keys.ToList ();
             }
         }
 
