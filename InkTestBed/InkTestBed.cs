@@ -46,9 +46,16 @@ class InkTestBed
         PrintChoicesIfNecessary ();
     }
 
+
     void ContinueMaximally ()
     {
-        Console.WriteLine (story.ContinueMaximally ());
+        while(story.canContinue) {
+            Console.Write (story.Continue ());
+            foreach(var tag in story.currentTags) {
+                Console.WriteLine ("# "+tag);
+            }
+        }
+        
         PrintChoicesIfNecessary ();
     }
 
@@ -296,7 +303,16 @@ class InkTestBed
 
             int number = 1;
             foreach (var c in story.currentChoices) {
-                Console.WriteLine (" {0}) {1}", number, c.text);
+                var choiceTagsSB = new System.Text.StringBuilder();
+                if( c.tags != null && c.tags.Count > 0 ) {
+                    choiceTagsSB.Append(" (CHOICE TAGS: ");
+                    foreach(var tag in c.tags) {
+                        choiceTagsSB.Append("# ");
+                        choiceTagsSB.Append(tag);
+                    }
+                    choiceTagsSB.Append(")");
+                }
+                Console.WriteLine (" {0}) {1}{2}", number, c.text, choiceTagsSB.ToString());
                 number++;
             }
         }
