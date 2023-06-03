@@ -18,7 +18,8 @@ namespace Ink.Runtime
         public int diverts;
         public string[] allknots;
         public string[] allstitches;
-    }
+        public Dictionary<string, string[]> knotlines;
+	}
     /// <summary>
     /// A Story is the core class that represents a complete Ink narrative, and
     /// manages the evaluation and state of it.
@@ -260,6 +261,9 @@ namespace Ink.Runtime
                 Stats.diverts = (Int32)stats["diverts"];
                 Stats.allknots = ((List<object>)stats["allknots"]).Select((s) => (string)s).ToArray();
                 Stats.allstitches = ((List<object>)stats["allstitches"]).Select((s) => (string)s).ToArray();
+                var orig = (Dictionary<string, object>)stats["knotlines"];
+                var output = orig.ToDictionary(item => item.Key, item => ((List<object>)item.Value).Select((s) => (string)s).ToArray());
+                Stats.knotlines = output;
             }
 
             ResetState ();
@@ -331,7 +335,23 @@ namespace Ink.Runtime
             writer.WriteProperty("choices", Stats.choices);
             writer.WriteProperty("gathers", Stats.gathers);
             writer.WriteProperty("diverts", Stats.diverts);
-
+            writer.WritePropertyStart("knotlines");
+            writer.WriteObjectStart();
+            foreach(var kvp in Stats.knotlines)
+            {
+                writer.WritePropertyStart(kvp.Key);
+                writer.WriteArrayStart();
+                foreach(var s in kvp.Value)
+                {
+                    writer.WriteStringStart();
+                    writer.WriteStringInner(s);
+                    writer.WriteStringEnd();
+                }
+                writer.WriteArrayEnd();
+                writer.WritePropertyEnd();
+            }
+            writer.WriteObjectEnd();
+            writer.WritePropertyEnd();
             writer.WritePropertyStart("allknots");
             writer.WriteArrayStart();
 

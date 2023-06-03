@@ -229,7 +229,7 @@ namespace Ink.Parsed
             runtimeStory.Stats.diverts = Stats.diverts;
             runtimeStory.Stats.allknots = Stats.AllKnots;
             runtimeStory.Stats.allstitches = Stats.AllStitches;
-
+            runtimeStory.Stats.knotlines = Stats.KnotLines;
             return runtimeStory;
 		}
 
