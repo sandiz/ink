@@ -12,7 +12,7 @@ namespace Ink {
         public int diverts;
         public string[] AllKnots;
         public string[] AllStitches;
-        
+        public Dictionary<string, string[]> KnotLines;
         public static Stats Generate(Ink.Parsed.Story story) {
             var stats = new Stats();
             var allText = story.FindAll<Ink.Parsed.Text>();
@@ -40,10 +40,18 @@ namespace Ink {
 
             stats.functions = 0;
             List<string> tempNames = new List<string>();
+            stats.KnotLines = new Dictionary<string, string[]>();
             foreach (var knot in knots)
             {
                 tempNames.Add(knot.name);
                 if (knot.isFunction) stats.functions++;
+                var texts = knot.FindAll<Ink.Parsed.Text>();
+                List<string> Lines = new List<string>();
+                foreach(var text in texts)
+                {
+                    Lines.Add(text.text);
+                }
+                stats.KnotLines.Add(knot.name, Lines.ToArray());
             }
 
             stats.AllKnots = tempNames.ToArray();
