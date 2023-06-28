@@ -515,7 +515,6 @@ namespace Ink.Parsed
         HashSet<Runtime.Container> _dontFlattenContainers = new HashSet<Runtime.Container>();
 
         Dictionary<string, Parsed.ListDefinition> _listDefs;
-        Runtime.InkStats _inkStats;
 	}
 }
 
